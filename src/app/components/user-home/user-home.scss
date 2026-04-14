@@ -1,0 +1,241 @@
+.product-card {
+  transition: transform 0.3s ease, shadow 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.1) !important;
+  }
+}
+
+.w-fit {
+  width: fit-content;
+}
+.card {
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.input-group-text, .form-control, .form-select {
+  padding: 0.6rem 1rem;
+}
+
+.btn-primary {
+  padding: 0.6rem 1rem;
+  background-color: #0d6efd;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+.navbar {
+  padding: 0.8rem 0;
+  
+  .btn-outline-danger {
+    border-width: 1.5px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: #dc3545;
+      color: white;
+      transform: scale(1.05);
+    }
+  }
+}
+
+.modal {
+  // بنخلي الانتقال سريع ونظيف
+  transition: opacity 0.15s linear;
+  
+  &.show {
+    opacity: 1;
+  }
+}
+
+.btn-close {
+  &:focus {
+    box-shadow: none;
+    outline: none;
+  }
+}
+
+.custom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+
+  &.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .custom-modal-dialog {
+    width: 90%;
+    max-width: 800px;
+    transform: translateY(-20px);
+    transition: all 0.3s ease-out;
+  }
+
+  &.active .custom-modal-dialog {
+    transform: translateY(0);
+  }
+}
+
+.my-custom-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease-in-out;
+
+  &.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .my-custom-content {
+    background: white;
+    width: 90%;
+    max-width: 850px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transform: scale(0.9);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  &.is-visible .my-custom-content {
+    transform: scale(1);
+  }
+}
+
+.custom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.close-icon-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  &:hover { color: #000; }
+}
+
+.instructions-text {
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.details-drawer {
+  position: fixed;
+  top: 0;
+  right: -400px; 
+  width: 400px;
+  height: 100vh;
+  background: white;
+  box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+  z-index: 1100;
+  transition: right 0.3s ease-in-out;
+  overflow-y: auto;
+
+  &.open {
+    right: 0; 
+  }
+}
+
+.drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
+  z-index: 1090;
+}
+
+@media (max-width: 576px) {
+  .details-drawer {
+    width: 100%; 
+    right: -100%;
+  }
+}
+.details-drawer {
+  position: fixed; 
+  top: 0;
+  right: -450px; 
+  width: 400px;
+  height: 100vh; 
+  background-color: #ffffff;
+  z-index: 2000; 
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+  transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow-y: auto; 
+  display: block !important;
+
+  &.open {
+    right: 0; 
+  }
+}
+
+.drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px); 
+  z-index: 1999;
+}
+
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.btn-primary.rounded-circle {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}

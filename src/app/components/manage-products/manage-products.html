@@ -1,0 +1,131 @@
+<div class="container-fluid p-0">
+  <div class="d-flex">
+    
+    <div class="sidebar shadow-sm" 
+         style="width: 260px; 
+                height: 100vh; 
+                background-color: #1e293b; 
+                position: fixed; 
+                left: 0; 
+                top: 0; 
+                z-index: 1050;">
+      
+      <div class="p-4 text-center border-bottom border-secondary">
+        <h4 class="fw-bold text-white m-0" style="letter-spacing: 1px;">Smart <span class="text-info">Grocery</span></h4>
+      </div>
+      
+      <div class="list-group list-group-flush p-3">
+        <a routerLink="/dashboard" 
+           routerLinkActive="active-link" 
+           [routerLinkActiveOptions]="{exact: true}"
+           (click)="viewMode = 'internal'"
+           class="list-group-item list-group-item-action bg-transparent text-white border-0 py-3 mb-2 rounded shadow-sm">
+          <i class="bi bi-grid-1x2-fill me-3 text-info"></i> Dashboard
+        </a>
+        
+        <a routerLink="/dashboard"
+           [queryParams]="{view: 'external'}"
+           routerLinkActive="active-link"
+           (click)="switchView('external')" 
+           class="list-group-item list-group-item-action bg-transparent text-white border-0 py-3 mb-2 rounded shadow-sm">
+          <i class="bi bi-search me-3"></i> Search External
+        </a>
+
+        <a routerLink="/manage-products" 
+           routerLinkActive="active-link"
+           class="list-group-item list-group-item-action bg-transparent text-white border-0 py-3 mb-2 rounded shadow-sm">
+          <i class="bi bi-box-seam me-3"></i> My Products
+        </a>
+      </div>
+    </div>
+
+    <div class="flex-grow-1 d-flex flex-column" 
+         style="margin-left: 260px; min-height: 100vh; background-color: #f8fafc;">
+
+      <nav class="navbar navbar-white bg-white shadow-sm px-4 py-3 sticky-top" 
+           style="height: 70px; z-index: 1040; top: 0;">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+          <h5 class="m-0 fw-semibold text-secondary">My Inventory</h5>
+          <div class="d-flex align-items-center">
+           <span class="badge bg-info bg-opacity-10 text-info px-3 py-2 rounded-pill me-3">
+              Total: {{ myProducts.length }} Products
+          </span>
+            <button (click)="logout()" class="btn btn-link text-danger text-decoration-none fw-bold d-flex align-items-center gap-2">
+              <i class="bi bi-box-arrow-right fs-5"></i>
+              Logout
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-fluid px-4">
+        
+        <div *ngIf="myProducts.length > 0" class="d-flex justify-content-between align-items-center mt-4 mb-4 bg-white p-3 rounded-4 shadow-sm border">
+          <div class="d-flex align-items-center">
+            <label class="text-muted small me-2 mb-0">Items per page:</label>
+            <select class="form-select form-select-sm border-0 fw-bold text-primary" 
+                    style="width: 80px; cursor: pointer;"
+                    [(ngModel)]="pageSize" 
+                    (change)="onPageSizeChange()">
+              <option [ngValue]="5">5</option>
+              <option [ngValue]="10">10</option>
+              <option [ngValue]="20">20</option>
+              <option [ngValue]="50">50</option>
+            </select>
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <span class="text-muted small">
+              Page <strong>{{ currentPage + 1 }}</strong> of <strong>{{ totalPages }}</strong>
+            </span>
+            
+            <div class="btn-group shadow-sm rounded-3 overflow-hidden border">
+              <button class="btn btn-white px-3 py-2" 
+                      (click)="prevPage()" 
+                      [disabled]="currentPage === 0">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              
+              <button class="btn btn-white px-3 py-2" 
+                      (click)="nextPage()" 
+                      [disabled]="currentPage >= totalPages - 1">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="myProducts.length === 0 && !isLoading" class="text-center py-5 mt-5">
+            <div class="mb-3">
+                <i class="bi bi-cart-x text-muted display-1 opacity-25"></i>
+            </div>
+            <h4 class="text-muted">Your inventory is empty</h4>
+            <p class="text-muted mb-4">Go to Dashboard to add some products from the external API.</p>
+            <button routerLink="/dashboard" class="btn btn-primary px-4 rounded-3 shadow-sm">Go to Search</button>
+        </div>
+
+        <div class="row g-4 mb-5">
+          <div class="col-12 col-sm-6 col-xl-4 mb-4" *ngFor="let product of myProducts">
+            <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden shadow-hover">
+              <img [src]="product.thumbnail" class="card-img-top" style="height: 200px; object-fit: cover;" alt="...">
+              
+              <div class="card-body p-4">
+                <h5 class="card-title fw-bold text-dark mb-1">{{ product.name }}</h5>
+                <p class="text-muted small mb-3">
+                    <i class="bi bi-tag-fill me-1 text-info"></i> {{ product.category }}
+                </p>
+                
+                <div class="pt-3 border-top">
+                    <button (click)="confirmDelete(product.id)" class="btn btn-outline-danger w-100 rounded-3 py-2 fw-semibold shadow-sm">
+                        <i class="bi bi-trash3 me-2"></i> Remove Product
+                    </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+<div class="container-fluid p-0">
+  <div class="d-flex">
+    
+    <div class="sidebar shadow-sm" 
+         style="width: 260px; height: 100vh; background-color: #1e293b; position: fixed; left: 0; top: 0; z-index: 1050;">
+      
+      <div class="p-4 text-center border-bottom border-secondary">
+        <h4 class="fw-bold text-white m-0" style="letter-spacing: 1px;">Smart <span class="text-info">Grocery</span></h4>
+      </div>
+      
+      <div class="list-group list-group-flush p-3">
+        <a routerLink="/dashboard" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" (click)="viewMode = 'internal'" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-3 mb-2 rounded shadow-sm">
+          <i class="bi bi-grid-1x2-fill me-3 text-info"></i> Dashboard
+        </a>
+        <a routerLink="/dashboard" [queryParams]="{view: 'external'}" routerLinkActive="active-link" (click)="switchView('external')" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-3 mb-2 rounded shadow-sm">
+          <i class="bi bi-search me-3"></i> Search External
+        </a>
+        <a routerLink="/manage-products" routerLinkActive="active-link" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-3 mb-2 rounded shadow-sm">
+          <i class="bi bi-box-seam me-3"></i> My Products
+        </a>
+      </div>
+    </div>
+
+    <div class="flex-grow-1 d-flex flex-column" style="margin-left: 260px; min-height: 100vh; background-color: #f8fafc;">
+
+      <nav class="navbar navbar-expand-lg shadow-sm px-4" style="background-color: #ffffff; height: 70px; position: sticky; top: 0; z-index: 1040;"> 
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+          <h5 class="m-0 fw-bold text-dark">
+            <i class="bi bi-speedometer2 me-2 text-info"></i>
+            {{ viewMode === 'external' ? 'Search External' : 'Dashboard Overview' }}
+          </h5>
+          <div class="d-flex align-items-center gap-3">
+            <div class="text-end d-none d-md-block border-end pe-3">
+              <small class="text-muted d-block" style="font-size: 0.7rem;">Welcome back,</small>
+              <span class="fw-bold text-dark">Admin User</span>
+            </div>
+            <button (click)="logout()" class="btn btn-link text-danger text-decoration-none fw-bold d-flex align-items-center gap-2">
+              <i class="bi bi-box-arrow-right fs-5"></i> Logout
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-fluid px-4 py-4">
+        
+        <div class="row mb-4 align-items-center bg-white p-3 mx-0 rounded-4 shadow-sm border">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text bg-light border-0"><i class="bi bi-search"></i></span>
+              <input type="text" class="form-control border-0 bg-light" placeholder="Search by letter (e.g. a, b...)" [(ngModel)]="searchLetter" (keyup.enter)="search()">
+              <button class="btn btn-primary px-4" (click)="search()">Search External</button>
+            </div>
+          </div>
+          <div class="col-md-6 text-end">
+            <button *ngIf="selectedMeals.length > 0" class="btn btn-success fw-bold px-4 rounded-3 shadow-sm" (click)="approveSelected()">
+              <i class="bi bi-check-all me-2"></i> Approve Selected ({{ selectedMeals.length }})
+            </button>
+            <button *ngIf="meals.length > 0 && selectedMeals.length === 0" class="btn btn-outline-primary fw-bold px-4 rounded-3" (click)="confirmApproveAll()"> 
+              <i class="bi bi-cloud-arrow-up me-2"></i> Approve All
+            </button>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-12 col-sm-6 col-xl-4 mb-4" *ngFor="let meal of pagedMeals">
+            <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden position-relative"
+                 [style.outline]="isMealSelected(meal) ? '3px solid #10b981' : 'none'">
+              
+              <div class="position-absolute top-0 start-0 m-3 z-3">
+                <input type="checkbox" class="form-check-input p-2 shadow-sm border-2" style="width: 1.5rem; height: 1.5rem; cursor: pointer;" [checked]="isMealSelected(meal)" (change)="toggleSelection(meal)">
+              </div>
+
+              <img [src]="meal.thumbnail" class="card-img-top" style="height: 200px; object-fit: cover;" alt="...">
+              
+              <div class="card-body p-4">
+                <h5 class="card-title fw-bold text-dark mb-1">{{ meal.name }}</h5>
+                <p class="text-muted small mb-4">
+                  <span class="badge bg-light text-dark border me-1">{{ meal.category }}</span>
+                  <span class="badge bg-light text-dark border">{{ meal.country }}</span>
+                </p>
+                <button (click)="approve(meal)" class="btn btn-outline-success w-100 rounded-3 py-2 fw-semibold">
+                  <i class="bi bi-plus-lg me-1"></i> Quick Approve
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="meals.length > pageSize" class="d-flex justify-content-center align-items-center gap-3 py-5">
+          <button class="btn btn-white shadow-sm border px-4 py-2 rounded-3" (click)="prevPage()" [disabled]="currentPage === 0">
+            <i class="bi bi-chevron-left me-1"></i> Previous
+          </button>
+
+          <span class="fw-bold text-muted">
+            Page {{ currentPage + 1 }} of {{ totalPages }}
+          </span>
+
+          <button class="btn btn-white shadow-sm border px-4 py-2 rounded-3" (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">
+            Next <i class="bi bi-chevron-right ms-1"></i>
+          </button>
+        </div>
+
+        <div *ngIf="meals.length === 0" class="text-center py-5">
+            <i class="bi bi-search text-muted display-1 opacity-25"></i>
+            <p class="text-muted mt-3 fs-5">Search to fetch products from the external API.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

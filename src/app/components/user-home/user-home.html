@@ -1,0 +1,301 @@
+<nav class="navbar navbar-dark bg-dark px-4 shadow-sm px-4 sticky-top">
+  <div class="container-fluid d-flex align-items-center">
+    
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <i class="bi bi-cart4 text-info me-2 fs-3"></i>
+      <span class="fw-bold">Smart Grocery</span>
+    </a>
+
+    <div class="d-flex align-items-center ms-auto gap-4">
+      
+      <div class="position-relative cursor-pointer" (click)="toggleShoppingList()" style="cursor: pointer;">
+        <i class="bi bi-cart3 fs-4 text-primary"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+              *ngIf="cartCount > 0" style="font-size: 0.6rem;">
+          {{ cartCount }}
+        </span>
+      </div>
+
+      <div class="text-light d-none d-md-block text-end">
+        <small class="d-block text-secondary" style="font-size: 0.7rem;">LOGGED IN AS</small>
+        <span class="fw-bold">User</span>
+      </div>
+
+     <button (click)="logout()" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+  <i class="bi bi-box-arrow-right me-1"></i> Logout
+</button>
+    </div>
+
+  </div>
+</nav>
+
+<div class="container my-4">
+  <div class="card border-0 shadow-sm rounded-4 mb-5 bg-white">
+    <div class="card-body p-4">
+      <div class="row g-4 align-items-center">
+        <div class="col-md-7">
+          <label class="form-label small fw-bold text-secondary mb-2">
+            <i class="bi bi-search me-1"></i> Search Products
+          </label>
+          <div class="input-group">
+            <input type="text" class="form-control bg-light border-0 py-2 px-3 rounded-pill" 
+                   placeholder="Search by name (e.g. Algerian, Burger...)" 
+                   [(ngModel)]="searchName" 
+                   (input)="onSearch()">
+          </div>
+        </div>
+
+        <div class="col-md-5">
+          <label class="form-label small fw-bold text-secondary mb-2">
+            <i class="bi bi-funnel me-1"></i> Category
+          </label>
+          <select class="form-select bg-light border-0 py-2 px-3 rounded-pill" 
+                  [(ngModel)]="selectedCategory" 
+                  (change)="onSearch()">
+            <option value="">All Categories</option>
+            <option *ngFor="let cat of categories" [value]="cat">{{cat}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
+    <div>
+      <h2 class="fw-bold m-0 text-dark">Explore Our Grocery</h2>
+      <p class="text-muted m-0 mt-2">
+        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2">
+          <i class="bi bi-box-seam me-1"></i> {{ totalElements }} items available
+        </span>
+      </p>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <div class="d-flex align-items-center bg-white px-3 py-2 rounded-4 shadow-sm border border-light">
+        <label class="small text-muted me-2 mb-0">Show:</label>
+        <select class="form-select form-select-sm border-0 fw-bold text-primary p-0" 
+                style="width: 45px; background-color: transparent;"
+                [(ngModel)]="pageSize" 
+                (change)="onPageSizeChange()">
+          <option [ngValue]="5">5</option>
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="15">15</option>
+          <option [ngValue]="20">20</option>
+        </select>
+      </div>
+
+      <div class="d-flex align-items-center bg-white px-3 py-2 rounded-4 shadow-sm border border-light">
+        <button class="btn btn-link text-dark p-0 me-3" (click)="prevPage()" [disabled]="currentPage === 0">
+          <i class="bi bi-arrow-left-circle-fill fs-4"></i>
+        </button>
+        
+        <span class="small fw-bold text-secondary" style="min-width: 100px; text-align: center;">
+          Page {{ currentPage + 1 }} of {{ totalPages }}
+        </span>
+
+        <button class="btn btn-link text-dark p-0 ms-3" (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">
+          <i class="bi bi-arrow-right-circle-fill fs-4"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-3" *ngFor="let product of products">
+      <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden product-card">
+        <div class="position-relative">
+          <img [src]="product.thumbnail" class="card-img-top" style="height: 180px; object-fit: cover;">
+          <div class="badge bg-dark position-absolute top-0 end-0 m-2 shadow-sm rounded-pill">
+            ${{ (product.id * 1.5).toFixed(2) }}
+          </div>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <h6 class="fw-bold mb-1">{{ product.name }}</h6>
+          <p class="text-muted small mb-3">{{ product.category }}</p>
+<div class="d-flex gap-2 mt-auto">
+<button type="button" 
+        (click)="viewDetails($event, product.id)" 
+        class="btn btn-outline-primary btn-sm w-100 rounded-pill mt-auto">
+  Details
+</button>
+
+<button (click)="addToCart(product.id)" class="btn btn-primary btn-sm rounded-circle shadow-sm" title="Add to Shopping List">
+    <i class="bi bi-plus-lg"></i>
+  </button>
+</div>
+
+<div class="drawer-backdrop" *ngIf="isModalOpen" (click)="closeModal()"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="products.length === 0" class="text-center py-5 mt-5">
+    <i class="bi bi-search text-muted opacity-25" style="font-size: 4rem;"></i>
+    <p class="text-muted mt-3">No products found matching your search.</p>
+  </div>
+</div>
+
+<div class="modal fade" id="productDetailsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body p-4" *ngIf="selectedProduct">
+        <div class="row g-4">
+          <div class="col-md-5">
+            <img [src]="selectedProduct.thumbnail" class="img-fluid rounded-4 shadow-sm" [alt]="selectedProduct.name">
+            <div class="mt-3 d-flex gap-2">
+              <span class="badge bg-primary rounded-pill px-3">{{selectedProduct.category}}</span>
+              <span class="badge bg-info text-white rounded-pill px-3">{{selectedProduct.country}}</span>
+            </div>
+          </div>
+          
+          <div class="col-md-7">
+            <h3 class="fw-bold mb-1">{{selectedProduct.name}}</h3>
+            <p class="text-muted small mb-4">Product ID: #{{selectedProduct.id}}</p>
+            
+            <div class="mb-4">
+              <h6 class="fw-bold text-dark"><i class="bi bi-journal-text me-2 text-primary"></i>Instructions</h6>
+              <div class="text-secondary small" style="max-height: 200px; overflow-y: auto; line-height: 1.6;">
+                {{selectedProduct.instructions}}
+              </div>
+            </div>
+
+            <div class="row g-2 mb-4">
+               <div class="col-6">
+                  <div class="p-2 border rounded-3 bg-light text-center">
+                    <small class="d-block text-muted">Estimated Price</small>
+                    <span class="fw-bold text-success">${{ (selectedProduct.id * 1.5).toFixed(2) }}</span>
+                  </div>
+               </div>
+               <div class="col-6" *ngIf="selectedProduct.youtube">
+                  <a [href]="selectedProduct.youtube" target="_blank" class="btn btn-outline-danger w-100 h-100 d-flex align-items-center justify-content-center rounded-3">
+                    <i class="bi bi-youtube me-2"></i> Watch Video
+                  </a>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="drawer-backdrop" *ngIf="isModalOpen" (click)="closeModal()"></div>
+
+<div class="details-drawer" [class.open]="isModalOpen">
+  <div class="p-4" *ngIf="selectedProduct">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <h4 class="fw-bold text-dark m-0">{{ selectedProduct.name }}</h4>
+      <button (click)="closeModal()" class="btn-close shadow-none"></button>
+    </div>
+
+    <img [src]="selectedProduct.thumbnail" class="img-fluid rounded-4 mb-4 shadow-sm">
+
+    <div class="mb-4">
+      <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill me-2">
+        {{ selectedProduct.category }}
+      </span>
+      <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill">
+        {{ selectedProduct.country }}
+      </span>
+    </div>
+
+    <h6 class="fw-bold mb-2">Preparation Instructions</h6>
+    <p class="text-muted small mb-4" style="text-align: justify; line-height: 1.7;">
+      {{ selectedProduct.instructions }}
+    </p>
+
+    <div class="sticky-bottom bg-white pt-3 border-top mt-auto">
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="h4 fw-bold text-success mb-0">${{ (selectedProduct.id * 1.5).toFixed(2) }}</span>
+
+        <div class="d-flex gap-2">
+     <button (click)="addToCart(selectedProduct.id)" 
+        class="btn btn-primary btn-sm rounded-circle shadow-sm d-flex align-items-center justify-content-center" 
+        style="width: 35px; height: 35px;"
+        title="Add to Shopping List">
+  <i class="bi bi-cart-plus"></i>
+</button>
+
+        <a *ngIf="selectedProduct.youtube" [href]="selectedProduct.youtube" target="_blank" class="btn btn-danger rounded-pill px-4">
+          <i class="bi bi-youtube me-2"></i>Watch Recipe
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="!selectedProduct" class="h-100 d-flex flex-column align-items-center justify-content-center">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-3 text-muted">Gathering ingredients...</p>
+  </div>
+</div>
+
+<div class="details-drawer p-4" [class.open]="isCartOpen">
+  <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+    <h4 class="fw-bold m-0"><i class="bi bi-basket2-fill me-2"></i>My List</h4>
+    <button (click)="isCartOpen = false" class="btn-close"></button>
+  </div>
+
+  <div *ngIf="shoppingList.length === 0" class="text-center mt-5">
+    <i class="bi bi-cart-x fs-1 text-muted"></i>
+    <p class="text-muted">Your list is empty!</p>
+  </div>
+
+  <div class="cart-items">
+  <div *ngFor="let item of shoppingList" class="card mb-3 border-0 shadow-sm rounded-3">
+    <div class="row g-0 align-items-center">
+      <div class="col-4">
+        <img [src]="item.thumbnail" class="img-fluid rounded-start" [alt]="item.name">
+      </div>
+      <div class="col-8">
+        <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="card-title mb-0 fw-bold" style="font-size: 0.9rem;">{{ item.name }}</h6>
+            <small class="text-muted">{{ item.category }}</small>
+          </div>
+          <button (click)="removeItem(item.id)" class="btn btn-link text-danger p-0 border-0">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade" 
+     [class.show]="showSuccessModal" 
+     [style.display]="showSuccessModal ? 'block' : 'none'" 
+     style="z-index: 2100;"> <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg text-center p-4 rounded-4">
+      <div class="modal-body">
+        <i class="bi bi-check-circle-fill text-success fs-1"></i>
+        <h5 class="fw-bold mt-2">Success!</h5>
+        <p class="text-muted mb-0 small">{{ "Meal added to list" }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade show" *ngIf="showSuccessModal" style="z-index: 2050;"></div>
+
+<div class="modal fade" [class.show]="showDeleteModal" [style.display]="showDeleteModal ? 'block' : 'none'" style="z-index: 2100;">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg text-center p-4 rounded-4">
+      <div class="modal-body">
+        <div class="mb-3">
+          <i class="bi bi-trash3-fill text-danger" style="font-size: 3rem;"></i>
+        </div>
+        <h5 class="fw-bold">Removed!</h5>
+        <p class="text-muted mb-0">Item removed from your list</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade show" *ngIf="showDeleteModal" style="z-index: 2050;"></div>

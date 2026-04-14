@@ -1,0 +1,11 @@
+/* ده الكلاس اللي هيتضاف أوتوماتيك لما تقف على الصفحة */
+.active-link {
+  background-color: #334155 !important; /* نفس اللون اللي إنت مختاره */
+  color: #ffffff !important;
+  font-weight: bold;
+}
+
+/* لو عاوز تغير لون الأيقونة لما يبقى Active */
+.active-link i {
+  color: #0dcaf0 !important; /* اللون الـ Info بتاعك */
+}
