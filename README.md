@@ -60,6 +60,3 @@ FullStack Developer | Spring Boot | Angular | DevOps Enthusiast
 📧 mostafalotfy3112@gmail.com  
 
 ---
-
-## ⭐ Final Note
-If you like this project, don’t forget to **star the repository** ⭐
