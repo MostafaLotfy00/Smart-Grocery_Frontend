@@ -1,4 +1,42 @@
 # 🛒 Smart Grocery - Frontend  
+## ✨ Features
+
+### 🛡️ Admin Dashboard
+- 🔐 Secure login for administrators  
+- 🌐 Load food products from external APIs (e.g. TheMealDB)  
+- 📥 Import selected products into the system database  
+- 🗑️ Remove products from the application  
+- 📦 Bulk import functionality (Bonus)  
+
+---
+
+### 👤 User Dashboard
+- 🔐 User authentication (login system)  
+- 🛒 Browse approved grocery items  
+- 📄 View detailed product information:
+  - Calories  
+  - Brand  
+  - Estimated price  
+  - Nutritional values  
+
+---
+
+### 🔍 Search & Filtering
+- Search items by name  
+- Filter by category  
+
+---
+
+### 🛒 Shopping Experience
+- Create and manage personal shopping list  
+- Add/remove items  
+- Real-time interaction (UI updates)  
+
+---
+
+### 🚀 Additional Enhancements
+- 📄 Paginated grocery list  
+- ⚡ Optimized search results  
 ## ⚙️ Installation & Setup
 
 ### 🔹 Prerequisites
