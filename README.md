@@ -11,7 +11,7 @@
 
 #### 1. Clone the project
 ```bash
-git clone https://github.com/your-username/smart-grocery-frontend.git
+git clone https://github.com/MostafaLotfy00/Smart-Grocery_Frontend.git
 cd smart-grocery-frontend
 ```
 
